@@ -1,0 +1,838 @@
+require('dotenv').config();
+
+const express = require('express');
+const mysql = require('mysql2');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const multer = require('multer');
+
+const path = require('path');
+const jwt = require('jsonwebtoken');
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'linuxuser',
+    password: 'linuxuser@123!',
+    database: 'linux_portal'
+});
+
+/*
+const token = jwt.sign(
+
+    {
+        id: user.id,
+        email: user.email,
+        role: user.role
+    },
+
+    process.env.JWT_SECRET,
+
+    {
+        expiresIn: '7d'
+    }
+);
+
+*/
+
+db.connect(err => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('MySQL Connected');
+    }
+});
+
+const auth = require('./middleware/auth');
+
+app.post(
+
+    '/api/documents',
+
+    auth,
+
+    async (req, res) => {
+
+        if (req.user.role !== 'admin') {
+
+            return res.status(403).json({
+
+                message: 'Access denied'
+            });
+        }
+
+        res.json({
+
+            success: true
+        });
+    }
+);
+
+
+app.get('/api/navigation/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    const response = {};
+
+    db.query(
+
+        'SELECT id,title,slug FROM documents WHERE id < ? ORDER BY id DESC LIMIT 1',
+
+        [id],
+
+        (err, prev) => {
+
+            response.previous = prev[0] || null;
+
+            db.query(
+
+                'SELECT id,title,slug FROM documents WHERE id > ? ORDER BY id ASC LIMIT 1',
+
+                [id],
+
+                (err, next) => {
+
+                    response.next = next[0] || null;
+
+                    res.json(response);
+                }
+            );
+        }
+    );
+});
+
+app.post('/api/register', async (req, res) => {
+
+    try {
+
+
+const {
+
+    name,
+    email,
+    phone,
+    password
+
+} = req.body;
+        const hashedPassword = await bcrypt.hash(
+            password,
+            10
+        );
+
+        db.query(
+
+            `
+	    INSERT INTO users
+(name, email, phone, password)
+VALUES (?, ?, ?, ?)
+            `,
+
+            [
+                name,
+                email,
+		phone,
+                hashedPassword
+            ],
+
+            (err, result) => {
+
+                if (err) {
+
+                    return res
+                        .status(500)
+                        .json(err);
+                }
+
+                res.json({
+
+                    success: true
+                });
+            }
+        );
+
+    } catch (err) {
+
+        res.status(500).json(err);
+    }
+});
+
+
+app.post('/api/login', async (req, res) => {
+
+    try {
+
+        const {
+            email,
+            password
+        } = req.body;
+
+        /*
+        ============================
+        GET USER
+        ============================
+        */
+
+        const [users] = await db
+            .promise()
+            .query(
+
+                `
+                SELECT *
+                FROM users
+                WHERE email = ?
+                `,
+
+                [email]
+            );
+
+        /*
+        ============================
+        USER NOT FOUND
+        ============================
+        */
+
+        if (users.length === 0) {
+
+            return res.status(401).json({
+
+                success: false,
+
+                message: 'User not found'
+            });
+        }
+
+        const user = users[0];
+
+        /*
+        ============================
+        CHECK PASSWORD
+        ============================
+        */
+
+        const passwordMatch = await bcrypt.compare(
+
+            password,
+
+            user.password
+        );
+
+        if (!passwordMatch) {
+
+            return res.status(401).json({
+
+                success: false,
+
+                message: 'Invalid password'
+            });
+        }
+
+        /*
+        ============================
+        UPDATE LOGIN STATUS
+        ============================
+        */
+
+        await db
+            .promise()
+            .query(
+
+                `
+                UPDATE users
+                SET login_status = 1
+                WHERE id = ?
+                `,
+
+                [user.id]
+            );
+
+       /* 
+	 ============================
+        SUCCESS
+        ============================
+*/
+        res.json({
+
+            success: true,
+
+            user: {
+
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
+        });
+
+/*
+res.json({
+
+    success: true,
+
+    token,
+
+    user: {
+
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+    }
+});
+*/
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+
+            success: false,
+
+            error: err.message
+        });
+    }
+});
+
+app.post('/api/logout', async (req, res) => {
+
+    try {
+
+        const userId = req.body.userId;
+
+        if (!userId) {
+
+            return res.status(400).json({
+
+                message: 'User ID missing'
+            });
+        }
+
+        await db.execute(
+
+            `
+            UPDATE users
+            SET login_status = 0
+            WHERE id = ?
+            `,
+            [userId]
+        );
+
+        res.json({
+
+            success: true,
+            message: 'Logout successful'
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+
+            error: 'Logout failed'
+        });
+    }
+});
+const storage = multer.diskStorage({
+
+    destination: (
+
+        req,
+        file,
+        cb
+
+    ) => {
+
+        cb(
+
+            null,
+
+            'uploads/'
+        );
+    },
+
+    filename: (
+
+        req,
+        file,
+        cb
+
+    ) => {
+
+        cb(
+
+            null,
+
+            Date.now() +
+
+            path.extname(file.originalname)
+        );
+    }
+});
+
+const upload = multer({
+
+    storage
+});
+
+
+app.use(
+
+    '/uploads',
+
+    express.static('uploads')
+);
+
+app.post(
+
+    '/api/upload',
+
+    upload.single('file'),
+
+    (
+
+        req,
+        res
+
+    ) => {
+
+        res.json({
+
+            location:
+
+                `https://linux.server-issue.online/uploads/${req.file.filename}`
+        });
+    }
+);
+
+app.get('/api/issues', async (req, res) => {
+
+    try {
+
+        const [rows] = await db.execute(
+
+            `
+            SELECT *
+            FROM issue_documents
+            ORDER BY id DESC
+            `
+        );
+
+        res.json(rows);
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+
+            error: 'Issues loading failed'
+        });
+    }
+});
+
+app.post('/api/documents', (req, res) => {
+
+    const {
+        title,
+        slug,
+        category,
+        content
+    } = req.body;
+
+    db.query(
+
+        `
+        INSERT INTO documents
+        (title, slug, category, content)
+        VALUES (?, ?, ?, ?)
+        `,
+
+        [title, slug, category, content],
+
+        (err, result) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json(err);
+            }
+
+            res.json({
+                success: true
+            });
+        }
+    );
+});
+
+app.get('/api/search/:keyword', (req, res) => {
+
+    const keyword = `%${req.params.keyword}%`;
+
+    db.query(
+
+        `
+        SELECT id,title,slug
+        FROM documents
+        WHERE title LIKE ?
+        `,
+
+        [keyword],
+
+        (err, results) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json(results);
+        }
+    );
+});
+
+app.get('/api/navigation/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    const response = {};
+
+    db.query(
+
+        'SELECT id,title,slug FROM documents WHERE id < ? ORDER BY id DESC LIMIT 1',
+
+        [id],
+
+        (err, prev) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            response.previous = prev[0] || null;
+
+            db.query(
+
+                'SELECT id,title,slug FROM documents WHERE id > ? ORDER BY id ASC LIMIT 1',
+
+                [id],
+
+                (err, next) => {
+
+                    if (err) {
+
+                        return res.status(500).json(err);
+                    }
+
+                    response.next = next[0] || null;
+
+                    res.json(response);
+                }
+            );
+        }
+    );
+});
+/*
+app.get('/api/admin/documents', (req, res) => {
+
+    db.query(
+
+        `
+        SELECT
+            id,
+            title,
+            slug,
+            category
+        FROM documents
+        ORDER BY id DESC
+        `,
+
+        (err, results) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json(results);
+        }
+    );
+});
+
+app.get('/api/admin/document/:id', (req, res) => {
+
+    db.query(
+
+        `
+        SELECT *
+        FROM documents
+        WHERE id = ?
+        `,
+
+        [req.params.id],
+
+        (err, results) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json(results[0]);
+        }
+    );
+});
+
+*/
+app.put('/api/admin/document/:id', (req, res) => {
+
+    const {
+
+        title,
+        slug,
+        category,
+        content
+
+    } = req.body;
+
+    db.query(
+
+        `
+        UPDATE documents
+        SET
+            title = ?,
+            slug = ?,
+            category = ?,
+            content = ?
+        WHERE id = ?
+        `,
+
+        [
+
+            title,
+            slug,
+            category,
+            content,
+            req.params.id
+
+        ],
+
+        (err, result) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json({
+                success: true
+            });
+        }
+    );
+});
+
+app.delete('/api/admin/document/:id', (req, res) => {
+
+    db.query(
+
+        `
+        DELETE FROM documents
+        WHERE id = ?
+        `,
+
+        [req.params.id],
+
+        (err, result) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json({
+                success: true
+            });
+        }
+    );
+});
+
+app.get('/api/admin/documents', (req, res) => {
+
+    db.query(
+
+        `
+        SELECT
+            id,
+            title,
+            slug,
+            category
+        FROM documents
+        ORDER BY id DESC
+        `,
+
+        (err, results) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json(results);
+        }
+    );
+});
+
+app.get('/api/admin/document/:id', (req, res) => {
+
+    db.query(
+
+        `
+        SELECT *
+        FROM documents
+        WHERE id = ?
+        `,
+
+        [req.params.id],
+
+        (err, results) => {
+
+            if (err) {
+
+                return res.status(500).json(err);
+            }
+
+            res.json(results[0]);
+        }
+    );
+});
+
+// Get Documents
+app.get('/api/documents', (req, res) => {
+
+    db.query(
+        'SELECT * FROM documents ORDER BY id DESC',
+        (err, results) => {
+            if (err) return res.status(500).json(err);
+            res.json(results);
+        }
+    );
+});
+
+
+// Get Single Document
+app.get('/api/documents/:slug', (req, res) => {
+
+    const slug = req.params.slug;
+
+    db.query(
+        'SELECT * FROM documents WHERE slug=?',
+        [slug],
+        (err, results) => {
+
+            if (err) return res.status(500).json(err);
+
+            if (results.length === 0) {
+                return res.status(404).json({
+                    message: 'Not found'
+                });
+            }
+
+            res.json(results[0]);
+        }
+    );
+});
+
+
+// Store View
+app.post('/api/view', (req, res) => {
+
+    const { document_id } = req.body;
+
+    const ip =
+        req.headers['x-forwarded-for'] ||
+        req.socket.remoteAddress;
+
+    db.query(
+        'INSERT INTO document_views(document_id, ip_address) VALUES(?,?)',
+        [document_id, ip],
+        (err) => {
+
+            if (err) return res.status(500).json(err);
+
+            res.json({
+                message: 'View Stored'
+            });
+        }
+    );
+});
+
+
+// Like / Unlike
+app.post('/api/like', (req, res) => {
+
+    const { document_id, action } = req.body;
+
+    const ip =
+        req.headers['x-forwarded-for'] ||
+        req.socket.remoteAddress;
+
+    db.query(
+        'INSERT INTO document_likes(document_id, user_ip, action) VALUES(?,?,?)',
+        [document_id, ip, action],
+        (err) => {
+
+            if (err) return res.status(500).json(err);
+
+            res.json({
+                message: 'Action Stored'
+            });
+        }
+    );
+});
+
+
+// Add Comment
+app.post('/api/comment', (req, res) => {
+
+    const { document_id, username, comment } = req.body;
+
+    db.query(
+        'INSERT INTO comments(document_id, username, comment) VALUES(?,?,?)',
+        [document_id, username, comment],
+        (err) => {
+
+            if (err) return res.status(500).json(err);
+
+            res.json({
+                message: 'Comment Added'
+            });
+        }
+    );
+});
+
+
+// Get Comments
+app.get('/api/comments/:document_id', (req, res) => {
+
+    db.query(
+        'SELECT * FROM comments WHERE document_id=? ORDER BY id DESC',
+        [req.params.document_id],
+        (err, results) => {
+
+            if (err) return res.status(500).json(err);
+
+            res.json(results);
+        }
+    );
+});
+
+
+app.listen(5000, () => {
+    console.log('Server Running on Port 5000');
+});
