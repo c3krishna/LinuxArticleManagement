@@ -1,0 +1,9 @@
+node_modules/
+linux-frontend/build/
+linux-frontend/node_modules/
+linux-api/node_modules/
+.env
+*.backup
+*.original
+*-original
+npm-debug.log*
