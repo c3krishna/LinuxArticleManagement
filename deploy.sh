@@ -27,7 +27,8 @@ mv linux-frontend/build.new linux-frontend/build
 rm -rf linux-frontend/build.old
 
 echo "==> Restarting the API"
-pm2 startOrReload ecosystem.config.js --update-env
+pm2 startOrReload ecosystem.config.js --update-env >/dev/null
 pm2 save >/dev/null
+pm2 describe linux | grep -E "status|exec cwd"
 
 echo "==> Done: $(git log --oneline -1)"
