@@ -117,6 +117,10 @@ body,
 .article-body pre * {
   font-family: "IBM Plex Mono", ui-monospace, monospace !important;
   color: #e8eef6 !important;
+}
+
+/* Only what is inside the block is transparent; the block itself keeps its dark background. */
+.article-body pre * {
   background: transparent !important;
 }
 

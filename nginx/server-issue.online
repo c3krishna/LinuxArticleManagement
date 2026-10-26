@@ -6,6 +6,24 @@ upstream linux_backend {
     server 127.0.0.1:5000;
 }
 
+# Old /blog/<slug> links from the previous app, mapped to where each post lives now.
+map $uri $old_blog_target {
+    default                                      /articles;
+    /blog/aws-cost-optimization                  /aws-cost-optimization;
+    /blog/mysql-mariadb-comparison               /mysql-mariadb-comparison;
+    /blog/ha-database-clusters-replication       /ha-database-clusters-replication;
+    /blog/nginx-performance-tuning               /nginx-performance-tuning;
+    /blog/docker-containerization-guide          /docker-containerization-guide;
+    /blog/ssl-certificates-best-practices        /ssl-certificates-best-practices;
+    /blog/linux-security-hardening               /linux-system-hardening-checklist;
+    /blog/monitoring-prometheus-grafana          /monitoring-prometheus-grafana;
+    /blog/asterisk-pbx-webrtc-web-calling-setup  /asterisk-pbx-webrtc-web-calling-setup;
+    /blog/openssl-ssl-csr-key-crt-ca-setup       /openssl-ssl-csr-key-crt-ca-setup;
+    /blog/ai-fundamentals                        /ai-fundamentals-understanding;
+    /blog/kubernets-deep-dive                    /kubernets-deep-dive;
+    /blog/devops-mystry-troubleshooting          /devops-mystry;
+}
+
 server {
     listen 80;
     listen [::]:80;
@@ -84,7 +102,7 @@ server {
     location = /terms-and-conditions { return 301 /terms; }
     location = /cookie-policy { return 301 /privacy-policy; }
     location = /blog { return 301 /articles; }
-    location ^~ /blog/ { return 301 /articles; }
+    location ^~ /blog/ { return 301 $old_blog_target; }
     location = /admin/blog { return 301 /admin/articles; }
 
     location / {
