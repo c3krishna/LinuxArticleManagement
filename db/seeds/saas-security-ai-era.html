@@ -1,0 +1,207 @@
+<style>
+/* Scoped to this article only. Every selector starts with .article-saas-ai so it out-ranks both
+   the current .article-body typography and the older Tailwind .prose wrapper without leaking. */
+.article-saas-ai{--sa-navy:#0f2744;--sa-text:#243044;--sa-muted:#55627a;--sa-border:#d7dee8;--sa-soft:#eef2f7;--sa-accent:#1d4ed8;--sa-accent-soft:#eef4ff;--sa-red:#c23b3b;--sa-red-soft:#fdecec;--sa-amber:#a86a08;--sa-amber-soft:#fff5e0;--sa-green:#1f7a45;--sa-green-soft:#e6f6ec}
+.article-saas-ai .sa-lead{font-size:18px!important;color:var(--sa-muted)!important;margin:0 0 .75rem}
+.article-saas-ai .sa-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 1.5rem}
+.article-saas-ai .sa-tag{font-size:13px!important;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--sa-accent-soft)!important;color:var(--sa-accent)!important}
+.article-saas-ai .sa-byline{font-size:14px!important;color:var(--sa-muted)!important;margin-left:4px}
+.article-saas-ai .sa-intro{background:#fff!important;border:1px solid var(--sa-border);border-left:4px solid var(--sa-accent);border-radius:8px;padding:12px 16px;margin:0 0 1.25rem;font-size:17px!important}
+.article-saas-ai .sa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px;margin:0 0 1.5rem}
+.article-saas-ai .sa-card{background:#fff!important;border:1px solid var(--sa-border);border-radius:10px;padding:16px 18px}
+.article-saas-ai .sa-card h3{display:flex;gap:10px;align-items:center;margin:0 0 .5rem;font-size:18px!important;line-height:1.35!important;color:var(--sa-navy)!important}
+.article-saas-ai .sa-num{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:14px!important;font-weight:700;background:var(--sa-accent-soft)!important;color:var(--sa-accent)!important}
+.article-saas-ai .sa-threat .sa-num{background:var(--sa-red-soft)!important;color:var(--sa-red)!important}
+.article-saas-ai .sa-mit .sa-num{background:var(--sa-green-soft)!important;color:var(--sa-green)!important}
+.article-saas-ai .sa-neg .sa-num{background:var(--sa-amber-soft)!important;color:var(--sa-amber)!important}
+.article-saas-ai .sa-card p,.article-saas-ai .sa-card li{font-size:16px!important;line-height:1.6!important;color:var(--sa-muted)!important}
+.article-saas-ai .sa-card p{margin:0}
+.article-saas-ai .sa-card ul{margin:0;padding-left:1.1rem}
+.article-saas-ai .sa-card li{margin:.25rem 0}
+.article-saas-ai .sa-top5{counter-reset:sa-t;list-style:none;padding:0;margin:0 0 1rem}
+.article-saas-ai .sa-top5 li{counter-increment:sa-t;position:relative;background:#fff!important;border:1px solid var(--sa-border);border-radius:8px;padding:10px 14px 10px 52px;margin:0 0 8px;font-size:17px!important}
+.article-saas-ai .sa-top5 li::before{content:counter(sa-t);position:absolute;left:14px;top:10px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;background:var(--sa-red-soft);color:var(--sa-red)}
+.article-saas-ai .sa-callout{background:var(--sa-green-soft)!important;color:var(--sa-navy)!important;border-radius:8px;padding:12px 16px;margin:1rem 0 2rem;font-weight:600;font-size:17px!important}
+.article-saas-ai .sa-table-wrap{overflow-x:auto;margin:0 0 1rem}
+.article-saas-ai .sa-table-wrap table{width:100%;border-collapse:collapse;margin:0;background:#fff}
+.article-saas-ai .sa-table-wrap th,.article-saas-ai .sa-table-wrap td{border:1px solid var(--sa-border);padding:.6rem .75rem;text-align:left;vertical-align:top;font-size:16px!important;line-height:1.6!important}
+.article-saas-ai .sa-table-wrap th{background:var(--sa-soft)!important;color:var(--sa-navy)!important}
+.article-saas-ai code{font-size:.88em!important;font-weight:400;background:var(--sa-soft)!important;color:#1e3a5f!important;padding:1px 6px;border-radius:4px}
+.article-saas-ai code::before,.article-saas-ai code::after{content:none}
+.article-saas-ai .sa-reading{border-top:1px solid var(--sa-border);margin-top:2rem;padding-top:1rem;font-size:15px!important;color:var(--sa-muted)!important}
+@media (max-width:600px){
+  .article-saas-ai .sa-grid{grid-template-columns:1fr}
+  .article-saas-ai .sa-table-wrap th,.article-saas-ai .sa-table-wrap td{padding:.5rem;font-size:15px!important}
+}
+</style>
+<div class="article-saas-ai">
+  <p class="sa-lead">Threats SaaS companies face as AI spreads, how to mitigate them, and the negligence gaps attackers exploit.</p>
+  <div class="sa-meta"><span class="sa-tag">Security</span><span class="sa-tag">AI</span><span class="sa-tag">SaaS</span><span class="sa-tag">DevSecOps</span><span class="sa-byline">By Krishnakumar Pethiah</span></div>
+
+  <h2>Threats</h2>
+  <div class="sa-intro">SaaS companies are hit from two directions: attackers use AI to scale and speed up attacks, and the AI features SaaS vendors ship become new attack surface themselves.</div>
+  <div class="sa-grid">
+    <div class="sa-card sa-threat"><h3><span class="sa-num">1</span>Prompt injection</h3><p>Hidden instructions in emails, tickets, documents or web pages hijack chatbots, copilots and agents to leak data or take actions.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">2</span>AI agents as insider risk</h3><p>Agents hold API keys, OAuth tokens and broad permissions. A manipulated agent can cause as much damage as a rogue employee.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">3</span>Non-human identity sprawl</h3><p>Service accounts, tokens, OAuth grants and agent credentials now outnumber human users and are rarely reviewed.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">4</span>SaaS supply-chain attacks</h3><p>One compromised vendor, integration, package or CI/CD pipeline gives attackers a path into every customer.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">5</span>AI social engineering &amp; deepfakes</h3><p>Flawless phishing plus voice and video impersonation of executives or support staff make help-desk and MFA attacks far easier.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">6</span>Faster, commoditized attacks</h3><p>AI lowers the skill barrier: automated recon, rapid vulnerability discovery and quick exploitation of misconfigurations.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">7</span>Data leakage through AI</h3><p>Customer data sent to third-party LLMs, shadow AI use by staff, and RAG systems returning other tenants' documents.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">8</span>Model &amp; pipeline attacks</h3><p>Poisoned training data, tampered model weights, and exposed inference endpoints abused for denial-of-wallet or model extraction.</p></div>
+    <div class="sa-card sa-threat"><h3><span class="sa-num">9</span>Post-quantum risk</h3><p>"Harvest now, decrypt later" puts long-lived sensitive data protected by RSA/ECC at future risk.</p></div>
+  </div>
+
+  <h2>Mitigation</h2>
+  <div class="sa-intro">Layered controls, mapped threat by threat. Core principle: <strong>assume the LLM will be tricked and design so it doesn't matter</strong>.</div>
+  <div class="sa-grid">
+    <div class="sa-card sa-mit"><h3><span class="sa-num">1</span>Prompt injection</h3><ul>
+      <li>Treat every model input as untrusted, including tool outputs</li>
+      <li>Separate privileges: the model reading external content gets no or read-only tools</li>
+      <li>Allowlist tools, schema-check arguments, enforce policy outside the LLM</li>
+      <li>Human approval for destructive or external actions</li>
+      <li>Block exfiltration via rendered links and images</li>
+      <li>Red-team bots with injection payloads regularly</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">2</span>AI agents</h3><ul>
+      <li>Dedicated identity per agent, never a shared admin account</li>
+      <li>Short-lived, scoped tokens per agent per tenant</li>
+      <li>Log prompt, tool, arguments and result to the SIEM</li>
+      <li>Rate limits, spend caps and a kill switch</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">3</span>Non-human identities</h3><ul>
+      <li>Inventory service accounts, API keys, OAuth apps, SSH keys</li>
+      <li>Move secrets into a vault (Vault, OpenBao, cloud KMS)</li>
+      <li>Automate rotation; revoke anything unused for 90 days</li>
+      <li>Secret scanning in CI (gitleaks, trufflehog)</li>
+      <li>Quarterly OAuth grant reviews</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">4</span>Supply chain</h3><ul>
+      <li>Pin dependencies with lockfiles and hashes; mirror internally</li>
+      <li>SBOMs (syft), scanning (grype/trivy), signing (cosign)</li>
+      <li>CI runners without standing prod credentials</li>
+      <li>Minimum-scope vendor integrations</li>
+      <li>Verify model checksums; prefer safetensors</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">5</span>Social engineering</h3><ul>
+      <li>Phishing-resistant MFA (FIDO2 / passkeys)</li>
+      <li>No resets on voice or video alone; callback to known numbers</li>
+      <li>Out-of-band verification for payments and access grants</li>
+      <li>DMARC <code>p=reject</code> with SPF and DKIM</li>
+      <li>Realistic AI-phishing simulations</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">6</span>Automated attacks</h3><ul>
+      <li>Patch critical internet-facing CVEs in days</li>
+      <li>Continuous external attack-surface scanning (nuclei)</li>
+      <li>CSPM / SSPM for cloud and SaaS misconfigurations</li>
+      <li>WAF, bot management, API rate limiting</li>
+      <li>Behavioral detection: impossible travel, mass exports</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">7</span>AI data leakage</h3><ul>
+      <li>Enforce tenant and permission filters inside the retrieval query</li>
+      <li>Redact PII before external LLM calls, or self-host</li>
+      <li>AI usage policy and approved tools list; egress DLP</li>
+      <li>Zero-retention, no-training clauses with LLM providers</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">8</span>Model infrastructure</h3><ul>
+      <li>Never expose Ollama / vLLM publicly; use auth and mTLS</li>
+      <li>Per-tenant quotas against denial-of-wallet</li>
+      <li>Restrict egress from GPU and inference hosts</li>
+      <li>Version and hash models and prompts</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">9</span>Post-quantum</h3><ul>
+      <li>Inventory RSA/ECC use for long-lived data</li>
+      <li>Enable hybrid PQ key exchange (X25519+ML-KEM) where supported</li>
+      <li>Build crypto agility, not a big-bang migration</li></ul></div>
+    <div class="sa-card sa-mit"><h3><span class="sa-num">★</span>Foundation controls</h3><ul>
+      <li>Zero trust and least privilege; segment prod, AI, DB, management</li>
+      <li>Centralized SIEM with AI-abuse alert rules</li>
+      <li>Immutable, isolated, restore-tested backups</li>
+      <li>IR runbooks for rogue-agent and vendor-compromise scenarios</li>
+      <li>Map controls to ISO 27001, SOC 2, NIST AI RMF</li></ul></div>
+  </div>
+
+  <h2>Areas of Negligence</h2>
+  <div class="sa-intro">Most SaaS breaches don't come from zero-days. They come from basic hygiene that slipped.</div>
+  <div class="sa-grid">
+    <div class="sa-card sa-neg"><h3><span class="sa-num">1</span>Identity &amp; access</h3><ul>
+      <li>MFA missing on admin, cloud root, VPN, Git, CI/CD</li>
+      <li>Shared generic admin accounts</li>
+      <li>Ex-employees and contractors still active</li>
+      <li>Over-privileged users; no access reviews</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">2</span>Secrets &amp; credentials</h3><ul>
+      <li>Keys hardcoded in code, <code>.env</code>, images, wikis</li>
+      <li>Secrets left in Git history, never rotated</li>
+      <li>Long-lived static cloud keys</li>
+      <li>Same password across dev, staging and prod</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">3</span>Cloud misconfiguration</h3><ul>
+      <li>Public buckets, snapshots and backups</li>
+      <li>SSH, DB, Redis, Elasticsearch open to <code>0.0.0.0/0</code></li>
+      <li>Exposed Proxmox, Grafana, Jenkins, phpMyAdmin, Docker API</li>
+      <li>Default credentials; root account for daily work</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">4</span>Patching &amp; assets</h3><ul>
+      <li>Forgotten test and demo servers</li>
+      <li>Abandoned subdomains (takeover risk)</li>
+      <li>Unpatched VPNs, firewalls, CMS, web servers</li>
+      <li>End-of-life OS and frameworks; no inventory</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">5</span>Application security</h3><ul>
+      <li>Broken access control / IDOR across tenants</li>
+      <li>Tenant filtering only in the frontend</li>
+      <li>APIs without auth, rate limits or validation</li>
+      <li>Verbose errors; unvalidated file uploads</li>
+      <li>No SAST/DAST or security code review</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">6</span>Logging &amp; monitoring</h3><ul>
+      <li>No centralized logs, or nobody reviews them</li>
+      <li>No alerts on admin creation, mass export, MFA disable</li>
+      <li>Short retention destroys breach evidence</li>
+      <li>Cloud audit logs not enabled in all regions</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">7</span>Third parties</h3><ul>
+      <li>Broad OAuth grants never reviewed</li>
+      <li>Vendor VPN/SSH access with no expiry</li>
+      <li>Unpinned public dependencies</li>
+      <li>CI/CD runners holding prod credentials</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">8</span>Backups &amp; recovery</h3><ul>
+      <li>Backups on the same network as prod</li>
+      <li>Never test-restored; no offline copy</li>
+      <li>No documented incident response plan</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">9</span>Email &amp; domain</h3><ul>
+      <li>Weak SPF/DKIM; DMARC stuck at <code>p=none</code></li>
+      <li>Dangling DNS records and expired domains</li>
+      <li>No verification for bank-change requests</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">10</span>AI-specific</h3><ul>
+      <li>Unauthenticated Ollama, vLLM, Jupyter endpoints</li>
+      <li>Customer data to external LLMs without review</li>
+      <li>Agents given admin tokens "to make it work"</li>
+      <li>RAG indexes mixing tenants' data</li>
+      <li>Staff pasting secrets into public chatbots</li></ul></div>
+    <div class="sa-card sa-neg"><h3><span class="sa-num">11</span>People &amp; process</h3><ul>
+      <li>No clear security ownership</li>
+      <li>"We'll fix it after launch"</li>
+      <li>Help desk resets without verification</li>
+      <li>Checkbox-only awareness training</li>
+      <li>Change management skipped for quick prod fixes</li></ul></div>
+  </div>
+
+  <h3>Top 5 causes of real incidents</h3>
+  <ol class="sa-top5">
+    <li>Stolen or reused credentials with no MFA</li>
+    <li>Cloud and exposed-service misconfiguration</li>
+    <li>Unpatched internet-facing systems</li>
+    <li>Broken access control between tenants and users</li>
+    <li>Leaked secrets in code or repositories</li>
+  </ol>
+  <div class="sa-callout">Fixing these five eliminates the majority of realistic attack paths.</div>
+
+  <h2>Roadmap</h2>
+  <div class="sa-intro">A rollout order that delivers the best return for effort.</div>
+  <div class="sa-table-wrap">
+    <table>
+      <thead><tr><th>Phase</th><th>Timeframe</th><th>Focus</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>0–30 days</td><td>Phishing-resistant MFA for admins, secret scanning plus vault, close public AI/inference endpoints, DMARC reject, patch internet-facing backlog</td></tr>
+        <tr><td><strong>2</strong></td><td>30–90 days</td><td>Non-human identity inventory and rotation, RAG tenant filtering, agent least-privilege and approval gates, SBOM and image scanning in CI, AI action logging to SIEM</td></tr>
+        <tr><td><strong>3</strong></td><td>90–180 days</td><td>Continuous external scanning, CSPM/SSPM, prompt-injection red-teaming, vendor risk reviews, IR tabletops with AI scenarios</td></tr>
+        <tr><td><strong>4</strong></td><td>Ongoing</td><td>Post-quantum planning, deepfake awareness training, quarterly access reviews, compliance mapping</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sa-callout">Enforce permissions, tenant boundaries and approvals outside the model — never rely on the LLM to protect itself.</div>
+
+  <p class="sa-reading">Further reading:
+    <a href="https://darktrace.com/blog/the-year-ahead-ai-cybersecurity-trends-to-watch-in-2026" target="_blank" rel="noopener">Darktrace 2026 trends</a> ·
+    <a href="https://secureframe.com/blog/emerging-cyber-threats-2026" target="_blank" rel="noopener">Secureframe: Emerging threats 2026</a> ·
+    <a href="https://futurecio.tech/autonomous-ai-attacks-zero-trust-and-saas-disruption-to-define-2026-cloudflare-finds" target="_blank" rel="noopener">Cloudflare 2026 predictions</a>
+  </p>
+</div>
