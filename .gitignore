@@ -7,3 +7,7 @@ linux-api/node_modules/
 *.original
 *-original
 npm-debug.log*
+linux-frontend/build.new/
+linux-frontend/build.old/
+# Files people upload (images, avatars) live only on the server.
+linux-api/uploads/
