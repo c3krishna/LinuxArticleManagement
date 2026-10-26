@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+import { CONTACT as BUSINESS } from '../data/services';
 
-const UPDATED = '26 October 2026';
-const CONTACT = 'admin@linux.server-issue.online';
+const UPDATED = '27 October 2026';
+const CONTACT = BUSINESS.email;
 
 function ExternalLink({ href, children }) {
     return <a href={href} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-700 underline underline-offset-2 break-words">{children}</a>;
@@ -12,9 +13,9 @@ const sections = [
         title: 'Who we are',
         body: (
             <p>
-                Linux Docs (linux.server-issue.online) publishes articles, cheat sheets and troubleshooting guides about Linux,
-                DevOps and AI, and hosts a community forum. This policy explains what information we collect, why, and the
-                choices you have.
+                Linux Docs (server-issue.online) publishes articles, cheat sheets and troubleshooting guides about Linux,
+                DevOps and AI, hosts a community forum and free network tools, and offers server support services. This policy
+                explains what information we collect, why, and the choices you have.
             </p>
         )
     },
@@ -25,6 +26,8 @@ const sections = [
                 <li><strong>Account details.</strong> If you register: your name, email address and password. Passwords are stored only as a one-way hash; we cannot read them.</li>
                 <li><strong>Profile photo.</strong> Optional. If you upload one, it is stored on our server and shown next to your name.</li>
                 <li><strong>Forum posts.</strong> Questions and answers you post, together with your name.</li>
+                <li><strong>Enquiries and bookings.</strong> When you contact us or request an appointment: your name, email, and the phone number, company, service, preferred date and message you give us, plus your IP address to help us block spam.</li>
+                <li><strong>Network tool checks.</strong> The domain you check is sent to our server to run the lookup. We do not store the domains you check; your IP address is held in memory briefly to limit how often checks can be run.</li>
                 <li><strong>Article views.</strong> When you open an article we record which article, your IP address and the time. We use this to count views (once per visitor per article per day) and to show aggregate statistics to site administrators.</li>
                 <li><strong>Server logs.</strong> Like most websites, our web server records requests, including IP address, browser type and the page requested, for security and troubleshooting.</li>
             </ul>
@@ -36,6 +39,7 @@ const sections = [
             <ul>
                 <li>To create and secure your account and let you sign in.</li>
                 <li>To run the forum and show your posts and profile photo.</li>
+                <li>To reply to enquiries, arrange appointments and provide the services you ask for.</li>
                 <li>To protect the site, for example by limiting repeated failed sign-in attempts.</li>
                 <li>To understand which content is useful and improve it.</li>
             </ul>
@@ -78,6 +82,7 @@ const sections = [
             <ul>
                 <li><strong>Google Fonts</strong> delivers the site&apos;s fonts, so your browser connects to Google&apos;s servers when pages load.</li>
                 <li><strong>TinyMCE Cloud</strong> provides the article editor used by site administrators. It is not loaded for readers.</li>
+                <li><strong>Gmail</strong> delivers the email we send about your enquiry or booking, so those messages pass through Google&apos;s mail servers.</li>
             </ul>
         )
     },
@@ -86,7 +91,8 @@ const sections = [
         body: (
             <p>
                 Articles, forum questions and answers, the name you post under and your profile photo are visible to anyone
-                visiting the site. Your email address is never shown publicly.
+                visiting the site. Your email address is never shown publicly, and enquiries and bookings are seen only by site
+                administrators.
             </p>
         )
     },
@@ -104,6 +110,7 @@ const sections = [
         body: (
             <ul>
                 <li>Account details are kept while your account exists.</li>
+                <li>Enquiries and bookings are kept for as long as we need them to provide and follow up on the service, and then deleted.</li>
                 <li>You can remove your profile photo at any time from <Link to="/account" className="font-medium text-blue-700 underline underline-offset-2">My account</Link>; the file is deleted from our server.</li>
                 <li>To see, correct or delete your account information, email us at the address below.</li>
                 <li>You can block or delete cookies in your browser settings; the site still works without advertising cookies.</li>

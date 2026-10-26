@@ -26,9 +26,11 @@ app.use(require('./routes/sitemap'));
 app.use('/api', require('./routes/auth'));
 app.use('/api', require('./routes/account'));
 app.use('/api', require('./routes/documents'));
+app.use('/api', require('./routes/serviceRequests'));
+app.use('/api', require('./routes/tools'));
 app.use('/api/forum', require('./routes/forum'));
 app.use('/api/upload', require('./routes/upload'));
-app.use('/api/admin', requireAuth, requireAdmin, require('./routes/adminArticles'), require('./routes/adminUsers'), require('./routes/adminAnalytics'));
+app.use('/api/admin', requireAuth, requireAdmin, require('./routes/adminArticles'), require('./routes/adminUsers'), require('./routes/adminAnalytics'), require('./routes/adminRequests'));
 
 app.use('/api', (req, res) => {
     res.status(404).json({ success: false, message: 'Not found' });

@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const { logActivity } = require('../lib/activity');
+const { toCsv } = require('../lib/csv');
 const { text, isSlug, normalizeTags, escapeLike, parseId, parsePaging } = require('../lib/validate');
 
 // Mounted under /api/admin behind requireAuth + requireAdmin.
@@ -88,13 +89,6 @@ function slugTaken(err) {
     return err.code === 'ER_DUP_ENTRY';
 }
 
-function csvCell(value) {
-    let cell = value instanceof Date ? value.toISOString() : String(value ?? '');
-    // Stop spreadsheet apps from evaluating cells as formulas.
-    if (/^[=+\-@\t\r]/.test(cell)) cell = `'${cell}`;
-    return /[",\n\r]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell;
-}
-
 router.get('/articles', async (req, res) => {
     const { where, params } = listFilters(req.query);
     const status = statusFilter(req.query);
@@ -136,12 +130,11 @@ router.get('/articles/export.csv', async (req, res) => {
     );
 
     const header = ['id', 'title', 'slug', 'category', 'tags', 'status', 'visibility', 'views', 'published_at', 'scheduled_at', 'updated_at'];
-    const lines = [header.join(',')].concat(rows.map((row) => header.map((key) => csvCell(row[key])).join(',')));
     const date = new Date().toISOString().slice(0, 10);
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="articles-${date}.csv"`);
-    res.send(`﻿${lines.join('\r\n')}\r\n`);
+    res.send(`﻿${toCsv(header, rows)}\r\n`);
 });
 
 router.get('/articles/slug-check', async (req, res) => {

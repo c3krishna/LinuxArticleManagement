@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, ExternalLink, FileText, LayoutGrid, LogOut, UserRound, Users } from 'lucide-react';
+import { BarChart3, ExternalLink, FileText, Inbox, LayoutGrid, LogOut, UserRound, Users } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { initials } from '../lib/format';
 import { Avatar, FOCUS, ToastProvider } from './ui';
@@ -8,6 +8,7 @@ import { Avatar, FOCUS, ToastProvider } from './ui';
 const NAV = [
     { to: '/admin/articles', label: 'Articles', icon: FileText },
     { to: '/admin/categories', label: 'Categories', icon: LayoutGrid },
+    { to: '/admin/requests', label: 'Enquiries', icon: Inbox },
     { to: '/admin/users', label: 'Users & roles', icon: Users },
     { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 }
 ];
@@ -18,6 +19,7 @@ function crumbFor(pathname) {
     if (pathname.startsWith('/admin/categories')) return ['Categories'];
     if (pathname.startsWith('/admin/users')) return ['Users & roles'];
     if (pathname.startsWith('/admin/analytics')) return ['Analytics'];
+    if (pathname.startsWith('/admin/requests')) return ['Enquiries & bookings'];
     return ['Articles'];
 }
 
@@ -108,7 +110,7 @@ function AdminLayout() {
 
                     <div>
                         <p className="mb-[7px] hidden px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-adm-side-muted nav:block">Workspace</p>
-                        <nav aria-label="Admin" className="grid grid-cols-2 gap-1 min-[420px]:grid-cols-4 nav:grid-cols-1">
+                        <nav aria-label="Admin" className="grid grid-cols-2 gap-1 min-[420px]:grid-cols-5 nav:grid-cols-1">
                             {NAV.map(({ to, label, icon: Icon }) => (
                                 <NavLink
                                     key={to}
