@@ -56,7 +56,7 @@ server {
     listen [::]:443 ssl http2;
     server_name server-issue.online;
 
-    root /var/www/linux-docs;
+    root /var/www/LinuxArticleManagement/linux-frontend/build;
     index index.html;
 
     ssl_certificate /etc/letsencrypt/live/server-issue.online/fullchain.pem;
@@ -112,7 +112,7 @@ server {
     # Hashed build assets never change. (A location with its own add_header drops the server-level ones,
     # which only matter for pages.)
     location /static/ {
-        alias /var/www/linux-docs/static/;
+        alias /var/www/LinuxArticleManagement/linux-frontend/build/static/;
         expires 1y;
         add_header Cache-Control "public, immutable";
         access_log off;
@@ -137,6 +137,6 @@ server {
     }
 
     location /uploads/ {
-        alias /var/www/linux-api/uploads/;
+        alias /var/www/LinuxArticleManagement/linux-api/uploads/;
     }
 }
