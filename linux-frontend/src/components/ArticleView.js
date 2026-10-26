@@ -14,14 +14,14 @@ function formatUpdated(dateStr) {
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+// Decodes every named and numeric entity (&mdash;, &rarr;, &#8217; ...). A textarea's content is plain
+// text to the parser, so nothing in it can run or load.
+const entityDecoder = typeof document !== 'undefined' ? document.createElement('textarea') : null;
+
 function decodeEntities(text) {
-    return (text || '')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&nbsp;/g, ' ');
+    if (!entityDecoder) return text || '';
+    entityDecoder.innerHTML = text || '';
+    return entityDecoder.value.replace(/ /g, ' ');
 }
 
 function processContent(html) {
