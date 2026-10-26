@@ -1,41 +1,42 @@
 const jwt = require('jsonwebtoken');
+const db = require('../db');
 
-const auth = (req, res, next) => {
-    try {
-        // Get token from header
-        const authHeader = req.headers.authorization;
-        
-        if (!authHeader) {
-            return res.status(401).json({
-                success: false,
-                message: 'No token provided'
-            });
-        }
+// The user is re-read on every request so role changes and disabled accounts apply immediately,
+// not when the 7-day token expires.
+async function requireAuth(req, res, next) {
+    const header = req.headers.authorization || '';
+    const token = header.startsWith('Bearer ') ? header.slice(7) : '';
 
-        // Extract token from "Bearer <token>"
-        const token = authHeader.startsWith('Bearer ') 
-            ? authHeader.slice(7) 
-            : authHeader;
-
-        // Verify token
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET || 'cM9PU9dJQp1YwUUPRtJGBOdY245YueAR2DszAtv2FRg='
-        );
-
-        // Attach user info to request
-        req.user = decoded;
-        next();
-
-    } catch (err) {
-        console.log('Auth error:', err.message);
-        
-        return res.status(401).json({
-            success: false,
-            message: 'Invalid or expired token',
-            error: err.message
-        });
+    if (!token) {
+        return res.status(401).json({ success: false, message: 'Please log in to continue' });
     }
-};
 
-module.exports = auth;
+    let payload;
+    try {
+        payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+    } catch (err) {
+        return res.status(401).json({ success: false, message: 'Your session has expired. Please log in again' });
+    }
+
+    const [rows] = await db.query(
+        'SELECT id, name, email, role, is_active FROM users WHERE id = ?',
+        [payload.id]
+    );
+    const user = rows[0];
+
+    if (!user || !user.is_active) {
+        return res.status(401).json({ success: false, message: 'Your session is no longer valid. Please log in again' });
+    }
+
+    req.user = user;
+    next();
+}
+
+function requireAdmin(req, res, next) {
+    if (req.user?.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Admin access required' });
+    }
+    next();
+}
+
+module.exports = { requireAuth, requireAdmin };

@@ -31,6 +31,8 @@ function Home() {
         return matchesSearch && matchesCategory;
     });
 
+    const featuredDocs = docs.filter((doc) => doc.featured).slice(0, 6);
+
     const setCategory = (name) => {
         if (!name) setSearchParams({});
         else setSearchParams({ category: name });
@@ -72,6 +74,21 @@ function Home() {
                         <SearchBar keyword={keyword} setKeyword={setKeyword} />
                     </div>
                 </div>
+
+                {featuredDocs.length > 0 && !keyword && !activeCategory && (
+                    <section aria-labelledby="featured-heading" className="mb-6">
+                        <h2 id="featured-heading" className="text-[12px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Featured</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                            {featuredDocs.map((doc) => (
+                                <Link key={doc.id} to={`/${doc.slug}`} className="block bg-white border border-slate-200 rounded-lg px-4 py-3.5 hover:border-blue-400 hover:bg-slate-50">
+                                    <p className="text-[12px] text-slate-500">{doc.category || 'General'}</p>
+                                    <h3 className="text-[16px] font-semibold text-navy mt-0.5">{doc.title}</h3>
+                                    {doc.excerpt && <p className="text-[14px] text-slate-600 mt-1 line-clamp-2">{doc.excerpt}</p>}
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
                 <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
                     {filteredDocs.map((doc, index) => (

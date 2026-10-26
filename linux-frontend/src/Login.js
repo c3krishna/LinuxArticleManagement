@@ -1,65 +1,66 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import AuthShell, { AUTH_BUTTON, AUTH_INPUT, Notice, PasswordInput, safeNext } from './components/AuthShell';
+import { errorMessage } from './lib/api';
+import { useAuth } from './lib/auth';
 
 function Login() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+    const [params] = useSearchParams();
+    const { user, login } = useAuth();
+    const [email, setEmail] = useState(params.get('email') || '');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const next = safeNext(params.get('next'));
 
-    const login = async () => {
+    const destination = (u) => next || (u.role === 'admin' ? '/admin/articles' : '/');
+
+    useEffect(() => {
+        if (user) navigate(destination(user), { replace: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
+
+    const submit = async (e) => {
+        e.preventDefault();
+        if (!email.trim() || !password) {
+            setError('Enter your email and password');
+            return;
+        }
+        setSubmitting(true);
+        setError('');
         try {
-            const res = await axios.post('/api/login', { email, password });
-            localStorage.setItem('user_id', res.data.user.id);
-            localStorage.setItem('name', res.data.user.name);
-            localStorage.setItem('email', res.data.user.email);
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('user', JSON.stringify(res.data.user));
-            navigate(res.data.user.role === 'admin' ? '/admin' : '/');
+            // Redirect happens in the effect above once the user is set.
+            await login(email.trim(), password);
         } catch (err) {
-            alert('Invalid credentials');
+            setError(errorMessage(err, 'Could not sign in. Please try again'));
+            setSubmitting(false);
         }
     };
-
-    const googleSuccess = async (credentialResponse) => {
-        try {
-            const decoded = jwtDecode(credentialResponse.credential);
-            localStorage.setItem('user', JSON.stringify({
-                name: decoded.name,
-                email: decoded.email,
-                picture: decoded.picture
-            }));
-            localStorage.setItem('token', credentialResponse.credential);
-            navigate('/');
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const field = 'w-full border border-slate-300 rounded-md p-3 text-[14px] bg-white text-ink focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600';
 
     return (
-        <div className="min-h-[70vh] flex items-center justify-center py-16 px-4">
-            <div className="bg-white border border-slate-200 p-8 rounded-lg w-full max-w-md">
-                <h1 className="text-[24px] font-semibold text-navy">Admin login</h1>
-                <p className="text-[14px] text-slate-500 mt-1 mb-6">Sign in to create and edit documents</p>
-                <div className="grid gap-3">
-                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className={field} />
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className={field} />
-                    <button onClick={login} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md text-[14px] font-medium">
-                        Sign in
-                    </button>
-                    <div className="flex justify-center pt-2">
-                        <GoogleLogin onSuccess={googleSuccess} onError={() => console.log('Login Failed')} />
-                    </div>
-                    <p className="text-center text-[13px] text-slate-500">
-                        No account? <Link to="/register" className="text-blue-700">Register</Link>
-                    </p>
+        <AuthShell
+            title="Welcome back"
+            subtitle="Sign in to your LinuxDocs account."
+            footer={<>New here? <Link to="/register" className="font-semibold text-adm-blue hover:underline">Create an account</Link></>}
+        >
+            {params.get('registered') && <Notice>Account created. Sign in to continue.</Notice>}
+            {params.get('expired') && !error && <Notice>Your session ended. Please sign in again.</Notice>}
+            {error && <Notice tone="error">{error}</Notice>}
+
+            <form onSubmit={submit} className="space-y-4" noValidate>
+                <div>
+                    <label htmlFor="login-email" className="mb-1.5 block text-[13px] font-semibold text-[#3d4a62]">Email</label>
+                    <input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" className={AUTH_INPUT} aria-invalid={Boolean(error) || undefined} required autoFocus={!email} />
                 </div>
-            </div>
-        </div>
+                <div>
+                    <label htmlFor="login-password" className="mb-1.5 block text-[13px] font-semibold text-[#3d4a62]">Password</label>
+                    <PasswordInput id="login-password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" invalid={Boolean(error)} />
+                </div>
+                <button type="submit" disabled={submitting} className={AUTH_BUTTON}>{submitting ? 'Signing in…' : 'Sign in'}</button>
+            </form>
+            <p className="mt-4 text-[12px] text-adm-muted">Forgot your password? Ask an administrator to reset it from Users &amp; roles.</p>
+        </AuthShell>
     );
 }
 
