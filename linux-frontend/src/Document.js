@@ -34,7 +34,7 @@ function Document() {
             <div className="px-6 py-20 text-center">
                 <h1 className="text-[28px] font-semibold text-navy mb-3">Article not found</h1>
                 <p className="text-slate-500 mb-6">{error}</p>
-                <Link to="/" className="text-blue-700 font-medium">← All documents</Link>
+                <Link to="/articles" className="text-blue-700 font-medium">← All articles</Link>
             </div>
         );
     }

@@ -23,10 +23,11 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api', require('./routes/auth'));
+app.use('/api', require('./routes/account'));
 app.use('/api', require('./routes/documents'));
 app.use('/api/forum', require('./routes/forum'));
 app.use('/api/upload', require('./routes/upload'));
-app.use('/api/admin', requireAuth, requireAdmin, require('./routes/adminArticles'), require('./routes/adminUsers'));
+app.use('/api/admin', requireAuth, requireAdmin, require('./routes/adminArticles'), require('./routes/adminUsers'), require('./routes/adminAnalytics'));
 
 app.use('/api', (req, res) => {
     res.status(404).json({ success: false, message: 'Not found' });

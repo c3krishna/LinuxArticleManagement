@@ -56,7 +56,7 @@ function Question() {
             <Link to="/forum" className="text-[13px] text-blue-700 hover:underline">← Forum</Link>
             <div className="bg-white border border-slate-200 rounded-lg p-6 mt-3 mb-6">
                 <h1 className="text-[28px] font-semibold text-navy mb-2">{data.question.title}</h1>
-                <p className="text-[13px] text-slate-500 mb-5">Asked by {data.question.name || 'a former member'}</p>
+                <p className="text-[13px] text-slate-500 mb-5">Asked by {data.question.name || 'Anonymous'}</p>
                 <p className="whitespace-pre-wrap break-words text-[16px] leading-relaxed text-ink">{data.question.content}</p>
             </div>
 
@@ -67,7 +67,7 @@ function Question() {
                 {data.answers.map((a) => (
                     <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-5">
                         <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed text-ink">{a.answer}</p>
-                        <p className="text-slate-500 mt-3 text-[13px]">Answered by {a.name || 'a former member'}</p>
+                        <p className="text-slate-500 mt-3 text-[13px]">Answered by {a.name || 'Anonymous'}</p>
                     </div>
                 ))}
             </div>

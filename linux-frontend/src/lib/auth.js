@@ -40,6 +40,14 @@ export function AuthProvider({ children }) {
         return res.data.user;
     }, [saveUser]);
 
+    const updateUser = useCallback((changes) => {
+        setUser((current) => {
+            const next = current ? { ...current, ...changes } : current;
+            if (next) localStorage.setItem(USER_KEY, JSON.stringify(next));
+            return next;
+        });
+    }, []);
+
     const logout = useCallback(() => {
         localStorage.removeItem(TOKEN_KEY);
         saveUser(null);
@@ -50,8 +58,9 @@ export function AuthProvider({ children }) {
         checking,
         isAdmin: user?.role === 'admin',
         login,
-        logout
-    }), [user, checking, login, logout]);
+        logout,
+        updateUser
+    }), [user, checking, login, logout, updateUser]);
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

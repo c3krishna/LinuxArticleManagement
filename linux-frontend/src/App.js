@@ -14,6 +14,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Navbar from './components/Navbar';
 import RequireAuth from './components/RequireAuth';
 import Home from './Home';
+import Articles from './Articles';
+import Account from './Account';
 import Document from './Document';
 import Tutorials from './Tutorials';
 import Kubernetes from './Kubernetes';
@@ -34,6 +36,7 @@ import ArticleEditor from './admin/ArticleEditor';
 import ArticlePreview from './admin/ArticlePreview';
 import CategoriesPage from './admin/CategoriesPage';
 import UsersPage from './admin/UsersPage';
+import AnalyticsPage from './admin/AnalyticsPage';
 import { AuthProvider } from './lib/auth';
 
 function PublicShell() {
@@ -79,6 +82,7 @@ const router = createBrowserRouter(createRoutesFromElements(
             <Route path="articles/:id/edit" element={<ArticleEditor />} />
             <Route path="categories" element={<CategoriesPage />} />
             <Route path="users" element={<UsersPage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="list" element={<Navigate to="/admin/articles" replace />} />
             <Route path="edit/:id" element={<LegacyEditRedirect />} />
             <Route path="*" element={<Navigate to="/admin/articles" replace />} />
@@ -87,6 +91,8 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route element={<PublicShell />}>
             <Route path="/admin/articles/:id/preview" element={<RequireAuth adminOnly><ArticlePreview /></RequireAuth>} />
             <Route path="/" element={<Home />} />
+            <Route path="/articles" element={<Articles />} />
+            <Route path="/account" element={<RequireAuth><Account /></RequireAuth>} />
             <Route path="/tutorials" element={<Tutorials />} />
             <Route path="/kubernetes" element={<Kubernetes />} />
             <Route path="/docker" element={<Docker />} />

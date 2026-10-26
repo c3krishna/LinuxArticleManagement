@@ -28,7 +28,7 @@ const registerLimiter = rateLimit({
 });
 
 function publicUser(user) {
-    return { id: user.id, name: user.name, email: user.email, role: user.role };
+    return { id: user.id, name: user.name, email: user.email, role: user.role, avatar_url: user.avatar_url || null };
 }
 
 router.post('/register', registerLimiter, async (req, res) => {
@@ -72,7 +72,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     }
 
     const [rows] = await db.query(
-        'SELECT id, name, email, password, role, is_active FROM users WHERE email = ?',
+        'SELECT id, name, email, password, role, is_active, avatar_url FROM users WHERE email = ?',
         [email]
     );
     const user = rows[0];

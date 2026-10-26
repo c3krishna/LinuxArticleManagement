@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ExternalLink, FileText, LayoutGrid, LogOut, Users } from 'lucide-react';
+import { BarChart3, ExternalLink, FileText, LayoutGrid, LogOut, UserRound, Users } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { initials } from '../lib/format';
 import { Avatar, FOCUS, ToastProvider } from './ui';
@@ -8,7 +8,8 @@ import { Avatar, FOCUS, ToastProvider } from './ui';
 const NAV = [
     { to: '/admin/articles', label: 'Articles', icon: FileText },
     { to: '/admin/categories', label: 'Categories', icon: LayoutGrid },
-    { to: '/admin/users', label: 'Users & roles', icon: Users }
+    { to: '/admin/users', label: 'Users & roles', icon: Users },
+    { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 }
 ];
 
 function crumbFor(pathname) {
@@ -16,6 +17,7 @@ function crumbFor(pathname) {
     if (/^\/admin\/articles\/\d+\/edit/.test(pathname)) return ['Articles', 'Edit article'];
     if (pathname.startsWith('/admin/categories')) return ['Categories'];
     if (pathname.startsWith('/admin/users')) return ['Users & roles'];
+    if (pathname.startsWith('/admin/analytics')) return ['Analytics'];
     return ['Articles'];
 }
 
@@ -46,7 +48,7 @@ function AccountMenu({ user, onLogout }) {
                 aria-label={`Account menu for ${user.name}`}
                 className={`rounded-full ${FOCUS}`}
             >
-                <Avatar text={initials(user.name)} />
+                <Avatar text={initials(user.name)} src={user.avatar_url} />
             </button>
             {open && (
                 <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-40 w-60 rounded-[12px] border border-adm-line bg-white p-2 shadow-[0_12px_32px_rgba(20,35,65,.14)]">
@@ -54,6 +56,13 @@ function AccountMenu({ user, onLogout }) {
                         <p className="truncate text-[13px] font-semibold text-adm-ink">{user.name}</p>
                         <p className="truncate text-[12px] text-adm-muted">{user.email}</p>
                     </div>
+                    <Link
+                        to="/account"
+                        role="menuitem"
+                        className={`mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-[#33415b] hover:bg-[#f5f7fb] ${FOCUS}`}
+                    >
+                        <UserRound size={15} aria-hidden="true" /> My account &amp; photo
+                    </Link>
                     <button
                         type="button"
                         role="menuitem"
@@ -99,7 +108,7 @@ function AdminLayout() {
 
                     <div>
                         <p className="mb-[7px] hidden px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-adm-side-muted nav:block">Workspace</p>
-                        <nav aria-label="Admin" className="grid grid-cols-3 gap-1 nav:grid-cols-1">
+                        <nav aria-label="Admin" className="grid grid-cols-2 gap-1 min-[420px]:grid-cols-4 nav:grid-cols-1">
                             {NAV.map(({ to, label, icon: Icon }) => (
                                 <NavLink
                                     key={to}
@@ -117,7 +126,7 @@ function AdminLayout() {
 
                     <div className="mt-auto hidden border-t border-adm-side-line px-2 pt-[18px] nav:block">
                         <div className="flex items-center gap-2.5">
-                            <Avatar text={initials(user.name)} />
+                            <Avatar text={initials(user.name)} src={user.avatar_url} />
                             <div className="min-w-0 flex-1">
                                 <strong className="block truncate text-[12px] text-white">{user.name}</strong>
                                 <small className="block text-[11px] text-adm-side-muted">Administrator</small>

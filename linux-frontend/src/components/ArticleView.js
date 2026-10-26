@@ -66,7 +66,7 @@ function ArticleView({ doc, related = [], headerAction = null, banner = null }) 
         <div className="flex w-full min-h-[calc(100vh-56px)]">
             <aside className="hidden lg:block w-64 xl:w-72 shrink-0 border-r border-slate-200 bg-white overflow-y-auto sticky top-14 h-[calc(100vh-56px)] custom-scrollbar">
                 <div className="px-4 py-4">
-                    <Link to="/" className="text-[13px] text-blue-700 hover:underline">← All documents</Link>
+                    <Link to="/articles" className="text-[13px] text-blue-700 hover:underline">← All articles</Link>
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mt-5 mb-3">On this page</p>
                     {toc.length > 0 ? (
                         <nav className="flex flex-col gap-0.5" aria-label="On this page">
@@ -92,7 +92,7 @@ function ArticleView({ doc, related = [], headerAction = null, banner = null }) 
                 {banner}
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <p className="text-[13px] text-slate-500">
-                        <Link to="/" className="hover:text-navy">Documents</Link>
+                        <Link to="/articles" className="hover:text-navy">Articles</Link>
                         <span className="mx-1.5">/</span>
                         <span>{doc.category || 'Linux'}</span>
                     </p>
