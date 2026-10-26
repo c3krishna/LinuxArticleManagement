@@ -2,3 +2,5 @@
 User-agent: *
 Disallow: /admin
 Disallow: /account
+
+Sitemap: https://linux.server-issue.online/sitemap.xml
