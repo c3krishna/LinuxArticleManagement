@@ -3,12 +3,17 @@ const db = require('../db');
 
 const router = express.Router();
 
-const SITE_URL = (process.env.SITE_URL || 'https://linux.server-issue.online').replace(/\/+$/, '');
+const SITE_URL = (process.env.SITE_URL || 'https://server-issue.online').replace(/\/+$/, '');
 
 // Public pages that are not articles. Query-string tabs are separate pages for readers and search engines.
 const STATIC_PAGES = [
     { path: '/', changefreq: 'daily', priority: '1.0' },
     { path: '/articles', changefreq: 'daily', priority: '0.9' },
+    { path: '/services', changefreq: 'monthly', priority: '0.9' },
+    { path: '/tools', changefreq: 'monthly', priority: '0.8' },
+    { path: '/book', changefreq: 'yearly', priority: '0.6' },
+    { path: '/contact', changefreq: 'yearly', priority: '0.6' },
+    { path: '/about', changefreq: 'yearly', priority: '0.5' },
     { path: '/cheatsheets', changefreq: 'monthly', priority: '0.7' },
     { path: '/cheatsheets?tab=ai-tools', changefreq: 'monthly', priority: '0.7' },
     { path: '/cheatsheets?tab=ai', changefreq: 'monthly', priority: '0.7' },
@@ -16,7 +21,8 @@ const STATIC_PAGES = [
     { path: '/issues?tab=ai', changefreq: 'monthly', priority: '0.7' },
     { path: '/linux-crash', changefreq: 'monthly', priority: '0.6' },
     { path: '/forum', changefreq: 'daily', priority: '0.6' },
-    { path: '/privacy-policy', changefreq: 'yearly', priority: '0.2' }
+    { path: '/privacy-policy', changefreq: 'yearly', priority: '0.2' },
+    { path: '/terms', changefreq: 'yearly', priority: '0.2' }
 ];
 
 function xml(value) {

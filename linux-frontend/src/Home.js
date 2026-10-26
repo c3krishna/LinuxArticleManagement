@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, BookOpen, BrainCircuit, Flame, LifeBuoy, MessagesSquare, Search, Sparkles, Terminal } from 'lucide-react';
+import { ArrowRight, BookOpen, BrainCircuit, Flame, LifeBuoy, MessagesSquare, Radar, Search, Sparkles, Terminal, Wrench } from 'lucide-react';
 
 const SECTIONS = [
     { to: '/articles', icon: BookOpen, title: 'Articles', text: 'In-depth guides on Linux, DevOps, databases and AI.' },
@@ -110,6 +110,27 @@ function Home() {
                             </Link>
                         ))}
                     </div>
+                </section>
+
+                <section aria-label="Services and tools" className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="flex gap-4 rounded-lg bg-navy p-5 text-white">
+                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white/10" aria-hidden="true"><Wrench size={20} /></span>
+                        <div>
+                            <h2 className="text-[17px] font-semibold">Need hands-on help?</h2>
+                            <p className="mt-0.5 text-[14px] text-slate-300">Server troubleshooting, mail, cloud, databases and monitoring from our engineers.</p>
+                            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+                                <Link to="/services" className="text-blue-200 hover:text-white hover:underline">See services</Link>
+                                <Link to="/book" className="text-blue-200 hover:text-white hover:underline">Book a call</Link>
+                            </div>
+                        </div>
+                    </div>
+                    <Link to="/tools" className="group flex gap-4 rounded-lg border border-slate-200 bg-white p-5 hover:border-blue-400 hover:shadow-sm">
+                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-700" aria-hidden="true"><Radar size={20} /></span>
+                        <span>
+                            <strong className="block text-[17px] font-semibold text-navy group-hover:text-blue-700">Free network tools</strong>
+                            <span className="mt-0.5 block text-[14px] text-slate-600">Check DNS, MX, SPF, DMARC, DKIM, SSL certificates and security headers.</span>
+                        </span>
+                    </Link>
                 </section>
 
                 {featured.length > 0 && (

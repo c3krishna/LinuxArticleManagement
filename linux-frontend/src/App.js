@@ -11,6 +11,12 @@ import {
     useSearchParams
 } from 'react-router-dom';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Services from './pages/Services';
+import Contact from './pages/Contact';
+import Book from './pages/Book';
+import NetworkTools from './pages/NetworkTools';
+import About from './pages/About';
+import Terms from './pages/Terms';
 import Navbar from './components/Navbar';
 import RequireAuth from './components/RequireAuth';
 import Home from './Home';
@@ -37,6 +43,7 @@ import ArticlePreview from './admin/ArticlePreview';
 import CategoriesPage from './admin/CategoriesPage';
 import UsersPage from './admin/UsersPage';
 import AnalyticsPage from './admin/AnalyticsPage';
+import RequestsPage from './admin/RequestsPage';
 import { AuthProvider } from './lib/auth';
 
 function PublicShell() {
@@ -51,9 +58,16 @@ function PublicShell() {
             </main>
             {!compact && (
                 <footer className="border-t border-slate-200 bg-white py-4">
-                    <div className="px-6 flex items-center justify-between text-[13px] text-slate-500">
+                    <div className="px-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[13px] text-slate-500">
                         <span>© 2026 Linux Docs</span>
-                        <Link to="/privacy-policy" className="hover:text-navy">Privacy</Link>
+                        <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-1">
+                            <Link to="/services" className="hover:text-navy">Services</Link>
+                            <Link to="/tools" className="hover:text-navy">Network tools</Link>
+                            <Link to="/about" className="hover:text-navy">About</Link>
+                            <Link to="/contact" className="hover:text-navy">Contact</Link>
+                            <Link to="/terms" className="hover:text-navy">Terms</Link>
+                            <Link to="/privacy-policy" className="hover:text-navy">Privacy</Link>
+                        </nav>
                     </div>
                 </footer>
             )}
@@ -83,6 +97,7 @@ const router = createBrowserRouter(createRoutesFromElements(
             <Route path="categories" element={<CategoriesPage />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="requests" element={<RequestsPage />} />
             <Route path="list" element={<Navigate to="/admin/articles" replace />} />
             <Route path="edit/:id" element={<LegacyEditRedirect />} />
             <Route path="*" element={<Navigate to="/admin/articles" replace />} />
@@ -108,6 +123,12 @@ const router = createBrowserRouter(createRoutesFromElements(
             <Route path="/ask-question" element={<AskQuestion />} />
             <Route path="/forum/:slug" element={<Question />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/book" element={<Book />} />
+            <Route path="/tools" element={<NetworkTools />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/:slug" element={<Document />} />
         </Route>
     </>

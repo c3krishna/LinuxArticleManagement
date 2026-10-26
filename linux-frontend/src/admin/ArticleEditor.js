@@ -20,7 +20,7 @@ const EMPTY = {
     scheduledLocal: ''
 };
 
-const SITE_HOST = 'linux.server-issue.online';
+const SITE_HOST = 'server-issue.online';
 
 function fromArticle(a) {
     return {

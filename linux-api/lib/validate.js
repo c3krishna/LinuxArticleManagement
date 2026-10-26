@@ -1,5 +1,7 @@
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Excludes list and address-syntax characters (, ; < > quotes brackets) so one value is always one mailbox,
+// which matters because the service forms send an acknowledgement to this address.
+const EMAIL_RE = /^[^\s@,;<>"'()[\]\\]+@[^\s@,;<>"'()[\]\\]+\.[^\s@,;<>"'()[\]\\]+$/;
 
 function text(value, max) {
     return typeof value === 'string' ? value.trim().slice(0, max) : '';
