@@ -8,7 +8,7 @@ const { text, isEmail, escapeLike, parseId, parsePaging } = require('../lib/vali
 const router = express.Router();
 
 const ROLES = ['admin', 'user'];
-const USER_COLUMNS = 'id, name, email, phone, role, is_active, created_at, last_login_at';
+const USER_COLUMNS = 'id, name, email, phone, role, is_active, avatar_url, created_at, last_login_at';
 
 async function findUser(id) {
     const [rows] = id ? await db.query(`SELECT ${USER_COLUMNS} FROM users WHERE id = ?`, [id]) : [[]];

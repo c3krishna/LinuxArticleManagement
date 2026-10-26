@@ -267,7 +267,7 @@ function UsersPage() {
                                     <tr key={u.id} className={`border-b border-[#edf0f5] last:border-0 hover:bg-[#fbfcff] ${u.is_active ? '' : 'bg-[#fcfcfd]'}`}>
                                         <td className="px-[22px] py-[13px]">
                                             <div className="flex min-w-[240px] items-center gap-3">
-                                                <Avatar text={initials(u.name)} className={u.is_active ? '' : 'opacity-50'} />
+                                                <Avatar text={initials(u.name)} src={u.avatar_url} className={u.is_active ? '' : 'opacity-50'} />
                                                 <div className="min-w-0">
                                                     <strong className="block truncate text-[13px] font-semibold">
                                                         {u.name}{isMe && <span className="ml-1.5 rounded bg-[#edf1f7] px-1.5 py-0.5 text-[10px] font-semibold text-[#56637a]">You</span>}

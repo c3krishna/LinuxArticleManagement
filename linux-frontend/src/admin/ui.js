@@ -89,7 +89,11 @@ export function Pagination({ page, pageCount, onChange }) {
     );
 }
 
-export function Avatar({ text, className = '' }) {
+// Profile photo when there is one, otherwise initials. Decorative: the name is always shown beside it.
+export function Avatar({ text, src, className = '' }) {
+    if (src) {
+        return <img src={src} alt="" aria-hidden="true" className={`h-[34px] w-[34px] shrink-0 rounded-full object-cover bg-[#dce6ff] ${className}`} />;
+    }
     return (
         <span aria-hidden="true" className={`grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-[#dce6ff] text-[12px] font-bold text-[#2746aa] ${className}`}>
             {text}

@@ -459,7 +459,7 @@ function ArticleEditor() {
 
                         <label className="flex items-start gap-2.5 text-[13px] font-semibold text-[#3d4a62]">
                             <input type="checkbox" checked={form.featured} onChange={(e) => set('featured')(e.target.checked)} className={`mt-0.5 h-4 w-4 rounded accent-adm-blue ${FOCUS}`} />
-                            <span>Feature on home page<span className="block text-[12px] font-normal text-adm-muted">Shown in the Featured row above the article list</span></span>
+                            <span>Feature on home page<span className="block text-[12px] font-normal text-adm-muted">Shown in the Featured section of the home page</span></span>
                         </label>
                     </Panel>
 
